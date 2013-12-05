@@ -59,7 +59,7 @@ public class EditPostActivity extends Activity {
     String mCategory;
     String mTags;
     String mContent;
-    
+
     String message;
     String yamlcontent;
 
@@ -72,10 +72,10 @@ public class EditPostActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-        
+
         mNewPostFormView = findViewById(R.id.newpost_form);
         mNewPostStatusView = findViewById(R.id.newpost_status);
-        
+
         Intent intent = getIntent();
         if(intent.getStringExtra("post") != null){
         	message = intent.getStringExtra("post");
@@ -86,14 +86,14 @@ public class EditPostActivity extends Activity {
         if(intent.getStringExtra("postdate") != null){
         	mDate = intent.getStringExtra("postdate");
         }
-        
+
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         /**
          * Restore draft if any is available
          */
-        
+
         restorePreferences();
         setStrings();
 
@@ -101,7 +101,7 @@ public class EditPostActivity extends Activity {
             Toast.makeText(EditPostActivity.this, "Please login", Toast.LENGTH_LONG ).show();
         }
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -136,9 +136,9 @@ public class EditPostActivity extends Activity {
         InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
-    
+
     private class getPost extends AsyncTask<String, Void, Void> {
-    	
+
     	@Override
         protected void onPreExecute() {
             showProgress(true);
@@ -147,7 +147,7 @@ public class EditPostActivity extends Activity {
         protected Void doInBackground(String... params) {
 
             String url = params[0];
-            
+
             try{
             	HttpClient client = new DefaultHttpClient();
             	HttpGet request = new HttpGet(url);
@@ -195,7 +195,7 @@ public class EditPostActivity extends Activity {
             }
             return null;
         }
-        
+
         @Override
         protected void onPostExecute(Void aVoid) {
         	showProgress(false);
@@ -223,20 +223,20 @@ public class EditPostActivity extends Activity {
         mTags = settings.getString("draft_tags", "");
         mContent = settings.getString("draft_content", "");
     }
-    
+
     private void publishPost(){
-    	
+
     	final EditText content = (EditText)findViewById(R.id.editTextContent);
-    	
+
     	if(content.getText().toString().isEmpty())
     		Toast.makeText(getApplicationContext(), R.string.newpost_empty, Toast.LENGTH_LONG).show();
     	else {
-    	
+
     		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        
+
     		savePreferences();
     		builder.setMessage(R.string.dialog_confirm_update);
-        
+
     		// Add the buttons
     		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
@@ -306,7 +306,7 @@ public class EditPostActivity extends Activity {
          */
         restorePreferences();
         setStrings();
-        
+
         super.onStart();
     }
 
@@ -357,7 +357,7 @@ public class EditPostActivity extends Activity {
             hideSoftKeyboard(EditPostActivity.this);
             showProgress(true);
         }
-        
+
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -389,7 +389,7 @@ public class EditPostActivity extends Activity {
                 String baseCommitSha = repositoryService.getBranches(repository).get(0).getCommit().getSha();
                 RepositoryCommit baseCommit = commitService.getCommit(repository, baseCommitSha);
                 String treeSha = baseCommit.getSha();
-                
+
                 String completeContent = "---\n" +
                         "layout: post\n" +
                         "title: " + '"' + mTitle + '"' + "\n" +
@@ -397,7 +397,6 @@ public class EditPostActivity extends Activity {
                         "category: " + mCategory + "\n" +
                         "tags: [" + mTags + "]"+ "\n" +
                         "---\n" +
-                        "{% include JB/setup %}\n" +
                          mContent;
 
                 // create new blob with data
@@ -412,10 +411,10 @@ public class EditPostActivity extends Activity {
 
                 // create new tree entry
                 TreeEntry treeEntry = new TreeEntry();
-                
+
                 // for testing
                 //treeEntry.setPath("pages/" + path);
-                
+
                 // working
                 treeEntry.setPath("_posts/" + path);
                 treeEntry.setMode(TreeEntry.MODE_BLOB);
@@ -476,7 +475,7 @@ public class EditPostActivity extends Activity {
             finish();
         }
     }
-    
+
     public void previewMarkdown(){
     	savePreferences();
     	if (!mContent.isEmpty()){
